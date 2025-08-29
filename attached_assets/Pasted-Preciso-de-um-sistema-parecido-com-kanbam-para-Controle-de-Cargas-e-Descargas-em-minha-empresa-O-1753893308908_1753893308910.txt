@@ -1,0 +1,19 @@
+Preciso de um sistema parecido com kanbam para Controle de Cargas e Descargas em minha empresa.
+
+O sistema consiste em um sistema de login, aonde eu posso fazer login via conta Microsoft, e apenas aqueles emails com o domínio de minha empresa poderão acessar.
+Deverá conter um sistema de Cookies para salvar sessões e não precisar fazer o login toda hora.
+Deverá ser robusto, com autenticação server-side para evitar invasões de qualquer natureza.
+
+Ele terá uma tela inicial aonde eu posso escolher qual será a próxima tela a exibir, sendo Visualização simplificada, Visualização completa, Cadastros e Relatórios.
+
+Visualização Simplificada: Deverá ser uma tela inteira, para demonstração em TV's, aonde também deverá ser de fácil explicação e chamativo para fácil entendimento. Contendo as informações de Agendamentos, Portaria, Carregamentos e Descargas. Esses tópicos deverão estar dipostos em cada canto da tela, sendo divido em 4 pedaços com fundos diferentes para uma fácil visualização, tendo as seguintes informações em cada card de caminhão:
+Agendamentos: Data Chegada, Horário, Placa, Motorista/Transportadora, Destino, Material
+Portaria: Data Chegada, Horário, Placa, Motorista/Transportadora, Destino, Material
+Carregamentos: Horário Entrada, Placa, Motorista/Transportadora, Destino, Material
+Descargas: Horário Entrada, Placa, Motorista/Transportadora, Destino, Material
+
+Visualização Completa: Deverá ser mais técnica, para um usuário mais profissional e com uma disposição mais completa e bonita.
+
+Cadastros: Deverá ter a opção de Cadastrar Caminhoes, Cadastrar Materiais, Cadastro de permissões. Para o cadastro do caminhão deverá solicitar a placa do caminhão, e o tipo "Truck" ou "Carreta", caso seja do tipo Carreta, ele deve vincular a placa do caminhão à placa da carreta. No cadastro de permissões, eu poderei escolher para cada usuário qual tela e qual opção deverá ser exibida, para um maior controle e segurança do sistema.
+
+Faça dessa forma, para depois podermos aperfeiçoar.

@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Controle de Cargas e Descargas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    'inter': ['Inter', 'sans-serif']
+                },
+                colors: {
+                    'primary': '#2563EB',
+                    'secondary': '#059669',
+                    'accent': '#DC2626',
+                    'warning': '#F59E0B',
+                    'info': '#8B5CF6'
+                }
+            }
+        }
+    };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-inter bg-gray-50 min-h-screen">
+
+    <!-- @COMPONENT: AuthenticationWrapper -->
+    <div id="auth-wrapper" class="min-h-screen">
+        <!-- Login Screen -->
+        <div id="login-screen" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+                <!-- Company Logo Area -->
+                <div class="text-center mb-8">
+                    <div class="mx-auto w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-truck text-white text-2xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900 mb-2">Sistema de Cargas</h1>
+                    <p class="text-gray-600">Controle de Carregamentos e Descargas</p>
+                </div>
+
+                <!-- Microsoft Login Button -->
+                <button data-event="click:handleMicrosoftLogin" data-implementation="Integrate with Microsoft OAuth API" 
+                        class="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-3 mb-4">
+                    <i class="fab fa-microsoft text-xl"></i>
+                    Entrar com Microsoft
+                </button>
+
+                <!-- Security Notice -->
+                <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-600 text-center">
+                    <i class="fas fa-shield-alt text-gray-500 mr-2"></i>
+                    Acesso restrito a funcionários autorizados
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Application -->
+        <div id="main-app" class="hidden">
+            <!-- @COMPONENT: NavigationHeader -->
+            <nav class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-truck text-white text-sm"></i>
+                        </div>
+                        <h1 class="text-xl font-bold text-gray-900">Sistema de Cargas</h1>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span data-bind="user.name" class="text-gray-700">João Silva</span>
+                        <button data-event="click:handleLogout" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Dashboard Home -->
+            <div id="dashboard-home" class="p-6">
+                <div class="max-w-7xl mx-auto">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Painel de Controle</h2>
+                        <p class="text-gray-600">Selecione a área que deseja acessar</p>
+                    </div>
+
+                    <!-- Main Navigation Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                        <!-- Visualização Simplificada -->
+                        <button data-event="click:showSimplifiedView" 
+                                class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+                                <i class="fas fa-tv text-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Visualização Simplificada</h3>
+                            <p class="text-gray-600 text-sm">Painel para exibição em TVs com status em tempo real</p>
+                        </button>
+
+                        <!-- Visualização Completa -->
+                        <button data-event="click:showCompleteView" 
+                                class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group">
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+                                <i class="fas fa-chart-line text-secondary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Visualização Completa</h3>
+                            <p class="text-gray-600 text-sm">Interface técnica com controles avançados</p>
+                        </button>
+
+                        <!-- Cadastros -->
+                        <button data-event="click:showRegistrations" 
+                                class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-yellow-200 transition-colors">
+                                <i class="fas fa-plus-circle text-warning text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Cadastros</h3>
+                            <p class="text-gray-600 text-sm">Registrar veículos, materiais e gerenciar permissões</p>
+                        </button>
+
+                        <!-- Relatórios -->
+                        <button data-event="click:showReports" 
+                                class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
+                                <i class="fas fa-file-chart-pie text-info text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Relatórios</h3>
+                            <p class="text-gray-600 text-sm">Análises e estatísticas de operações</p>
+                        </button>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="mt-12">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Status Atual</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="bg-blue-50 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-blue-600 font-medium">Agendamentos</p>
+                                        <p class="text-2xl font-bold text-blue-900" data-bind="stats.scheduled">12</p>
+                                    </div>
+                                    <i class="fas fa-calendar-check text-blue-500 text-2xl"></i>
+                                </div>
+                            </div>
+                            <div class="bg-green-50 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-green-600 font-medium">Na Portaria</p>
+                                        <p class="text-2xl font-bold text-green-900" data-bind="stats.atGate">3</p>
+                                    </div>
+                                    <i class="fas fa-door-open text-green-500 text-2xl"></i>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-50 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-yellow-600 font-medium">Carregando</p>
+                                        <p class="text-2xl font-bold text-yellow-900" data-bind="stats.loading">5</p>
+                                    </div>
+                                    <i class="fas fa-truck-loading text-yellow-500 text-2xl"></i>
+                                </div>
+                            </div>
+                            <div class="bg-red-50 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-red-600 font-medium">Descarregando</p>
+                                        <p class="text-2xl font-bold text-red-900" data-bind="stats.unloading">2</p>
+                                    </div>
+                                    <i class="fas fa-truck-ramp text-red-500 text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simplified View (TV Display) -->
+            <div id="simplified-view" class="hidden min-h-screen bg-gray-900 p-4">
+                <!-- @COMPONENT: TVDisplayHeader -->
+                <div class="bg-white rounded-lg p-4 mb-4 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                                <i class="fas fa-truck text-white"></i>
+                            </div>
+                            <h1 class="text-2xl font-bold text-gray-900">Centro de Operações - Tempo Real</h1>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-gray-500">Última atualização</div>
+                            <div class="text-lg font-semibold text-gray-900" data-bind="lastUpdate">15:32:45</div>
+                        </div>
+                        <button data-event="click:backToHome" class="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg">
+                            <i class="fas fa-arrow-left text-gray-600"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Four Quadrants Layout -->
+                <div class="grid grid-cols-2 gap-4 h-[calc(100vh-120px)]">
+                    <!-- Agendamentos Quadrant -->
+                    <div class="bg-blue-50 rounded-xl p-6 overflow-y-auto">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-calendar-check text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-blue-900">Agendamentos</h2>
+                                <p class="text-blue-700">Próximas chegadas</p>
+                            </div>
+                        </div>
+
+                        <!-- @MAP: scheduledTrucks.map(truck => ( -->
+                        <div class="bg-white rounded-lg p-4 mb-4 shadow-sm" data-mock="true">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-truck text-blue-500 text-lg"></i>
+                                    <div>
+                                        <div class="font-semibold text-gray-900" data-bind="truck.plate">ABC-1234</div>
+                                        <div class="text-sm text-gray-600" data-bind="truck.driver">João Santos - TransLog</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-500" data-bind="truck.date">15/12/2024</div>
+                                    <div class="font-semibold text-blue-600" data-bind="truck.time">16:30</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Destino:</span>
+                                    <span class="font-medium ml-1" data-bind="truck.destination">São Paulo</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Material:</span>
+                                    <span class="font-medium ml-1" data-bind="truck.material">Cimento</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 mb-4 shadow-sm" data-mock="true">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-truck text-blue-500 text-lg"></i>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">DEF-5678</div>
+                                        <div class="text-sm text-gray-600">Maria Silva - RodoLog</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-500">15/12/2024</div>
+                                    <div class="font-semibold text-blue-600">17:15</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Destino:</span>
+                                    <span class="font-medium ml-1">Rio de Janeiro</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Material:</span>
+                                    <span class="font-medium ml-1">Areia</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+
+                    <!-- Portaria Quadrant -->
+                    <div class="bg-green-50 rounded-xl p-6 overflow-y-auto">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-door-open text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-green-900">Portaria</h2>
+                                <p class="text-green-700">Veículos na entrada</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 mb-4 shadow-sm" data-mock="true">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-truck text-green-500 text-lg"></i>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">GHI-9012</div>
+                                        <div class="text-sm text-gray-600">Carlos Ferreira - CargoExpress</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-500">15/12/2024</div>
+                                    <div class="font-semibold text-green-600">15:45</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Destino:</span>
+                                    <span class="font-medium ml-1">Belo Horizonte</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Material:</span>
+                                    <span class="font-medium ml-1">Concreto</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                                    Aguardando liberação
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carregamentos Quadrant -->
+                    <div class="bg-yellow-50 rounded-xl p-6 overflow-y-auto">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-truck-loading text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-yellow-900">Carregamentos</h2>
+                                <p class="text-yellow-700">Em processo de carga</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 mb-4 shadow-sm" data-mock="true">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-truck text-yellow-500 text-lg"></i>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">JKL-3456</div>
+                                        <div class="text-sm text-gray-600">Ana Costa - LogisticaBR</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-500">Entrada: 14:20</div>
+                                    <div class="font-semibold text-yellow-600">Doca 3</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Destino:</span>
+                                    <span class="font-medium ml-1">Salvador</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Material:</span>
+                                    <span class="font-medium ml-1">Ferro</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="bg-yellow-200 rounded-full h-2 mb-2">
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <div class="text-xs text-yellow-700">65% concluído</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 mb-4 shadow-sm" data-mock="true">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-truck text-yellow-500 text-lg"></i>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">MNO-7890</div>
+                                        <div class="text-sm text-gray-600">Pedro Lima - TransCarga</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-500">Entrada: 15:10</div>
+                                    <div class="font-semibold text-yellow-600">Doca 1</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Destino:</span>
+                                    <span class="font-medium ml-1">Brasília</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Material:</span>
+                                    <span class="font-medium ml-1">Aço</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="bg-yellow-200 rounded-full h-2 mb-2">
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 30%"></div>
+                                </div>
+                                <div class="text-xs text-yellow-700">30% concluído</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Descargas Quadrant -->
+                    <div class="bg-red-50 rounded-xl p-6 overflow-y-auto">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-truck-ramp text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-red-900">Descargas</h2>
+                                <p class="text-red-700">Em processo de descarga</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 mb-4 shadow-sm" data-mock="true">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-truck text-red-500 text-lg"></i>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">PQR-1357</div>
+                                        <div class="text-sm text-gray-600">Luiz Oliveira - RapidLog</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-500">Entrada: 13:45</div>
+                                    <div class="font-semibold text-red-600">Doca 5</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Origem:</span>
+                                    <span class="font-medium ml-1">Fortaleza</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Material:</span>
+                                    <span class="font-medium ml-1">Alumínio</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="bg-red-200 rounded-full h-2 mb-2">
+                                    <div class="bg-red-500 h-2 rounded-full" style="width: 80%"></div>
+                                </div>
+                                <div class="text-xs text-red-700">80% concluído</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complete Technical View -->
+            <div id="complete-view" class="hidden">
+                <!-- @COMPONENT: TechnicalHeader -->
+                <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <button data-event="click:backToHome" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h1 class="text-2xl font-bold text-gray-900">Visualização Completa</h1>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                Novo Agendamento
+                            </button>
+                            <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 flex items-center gap-2">
+                                <i class="fas fa-download"></i>
+                                Exportar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <!-- Filters and Search -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <div class="flex-1 min-w-64">
+                                <div class="relative">
+                                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text" placeholder="Buscar por placa, motorista..." 
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                            </div>
+                            <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary">
+                                <option>Todos os Status</option>
+                                <option>Agendado</option>
+                                <option>Na Portaria</option>
+                                <option>Carregando</option>
+                                <option>Descarregando</option>
+                            </select>
+                            <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary">
+                                <option>Hoje</option>
+                                <option>Esta Semana</option>
+                                <option>Este Mês</option>
+                            </select>
+                            <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-filter"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Data Table -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Operações Ativas</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Veículo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Motorista</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Material</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destino/Origem</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progresso</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" data-mock="true">
+                                    <!-- @MAP: operations.map(operation => ( -->
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-truck text-gray-400 mr-3"></i>
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900" data-bind="operation.plate">ABC-1234</div>
+                                                    <div class="text-sm text-gray-500" data-bind="operation.vehicleType">Truck</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900" data-bind="operation.driver">João Santos</div>
+                                            <div class="text-sm text-gray-500" data-bind="operation.company">TransLog</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                Agendado
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-bind="operation.material">Cimento</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-bind="operation.destination">São Paulo</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Aguardando</div>
+                                            <div class="text-sm text-gray-500" data-bind="operation.scheduledTime">16:30</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button class="text-primary hover:text-blue-700 mr-3">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-truck text-gray-400 mr-3"></i>
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">GHI-9012</div>
+                                                    <div class="text-sm text-gray-500">Carreta</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Carlos Ferreira</div>
+                                            <div class="text-sm text-gray-500">CargoExpress</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Na Portaria
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Concreto</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Belo Horizonte</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Liberação</div>
+                                            <div class="text-sm text-gray-500">15:45</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button class="text-primary hover:text-blue-700 mr-3">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-truck text-gray-400 mr-3"></i>
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">JKL-3456</div>
+                                                    <div class="text-sm text-gray-500">Truck</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Ana Costa</div>
+                                            <div class="text-sm text-gray-500">LogisticaBR</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                Carregando
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Ferro</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Salvador</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="w-full bg-gray-200 rounded-full h-2 mb-1">
+                                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 65%"></div>
+                                            </div>
+                                            <div class="text-sm text-gray-500">65% - Doca 3</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button class="text-primary hover:text-blue-700 mr-3">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- @END_MAP )) -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-6 rounded-lg">
+                        <div class="flex-1 flex justify-between sm:hidden">
+                            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Anterior
+                            </button>
+                            <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Próximo
+                            </button>
+                        </div>
+                        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-gray-700">
+                                    Mostrando <span class="font-medium">1</span> a <span class="font-medium">10</span> de{' '}
+                                    <span class="font-medium">97</span> resultados
+                                </p>
+                            </div>
+                            <div>
+                                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                                    <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button class="bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                        1
+                                    </button>
+                                    <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                        2
+                                    </button>
+                                    <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                        3
+                                    </button>
+                                    <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Forms -->
+            <div id="registration-view" class="hidden">
+                <!-- @COMPONENT: RegistrationHeader -->
+                <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <button data-event="click:backToHome" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h1 class="text-2xl font-bold text-gray-900">Cadastros</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <!-- Registration Tabs -->
+                    <div class="bg-white rounded-lg shadow-sm mb-6">
+                        <div class="border-b border-gray-200">
+                            <nav class="-mb-px flex space-x-8 px-6">
+                                <button data-event="click:showVehicleForm" 
+                                        class="registration-tab active border-b-2 border-primary text-primary py-4 px-1 text-sm font-medium">
+                                    <i class="fas fa-truck mr-2"></i>
+                                    Veículos
+                                </button>
+                                <button data-event="click:showMaterialForm" 
+                                        class="registration-tab border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium">
+                                    <i class="fas fa-box mr-2"></i>
+                                    Materiais
+                                </button>
+                                <button data-event="click:showPermissionsForm" 
+                                        class="registration-tab border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium">
+                                    <i class="fas fa-users-cog mr-2"></i>
+                                    Permissões
+                                </button>
+                            </nav>
+                        </div>
+
+                        <!-- Vehicle Registration Form -->
+                        <div id="vehicle-form" class="p-6">
+                            <div class="max-w-2xl">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Cadastro de Veículo</h3>
+                                
+                                <form class="space-y-6" data-implementation="Handle vehicle registration with validation">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Placa do Veículo *</label>
+                                            <input type="text" placeholder="ABC-1234" 
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Veículo *</label>
+                                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                                <option>Selecionar tipo</option>
+                                                <option>Truck</option>
+                                                <option>Carreta</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- @STATE: vehicleType === 'Carreta' ? show : hide -->
+                                    <div id="carreta-fields" class="hidden">
+                                        <div class="bg-blue-50 rounded-lg p-4">
+                                            <h4 class="font-medium text-blue-900 mb-3">Informações da Carreta</h4>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-blue-700 mb-1">Placa da Carreta</label>
+                                                    <input type="text" placeholder="DEF-5678" 
+                                                           class="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-blue-700 mb-1">Capacidade (ton)</label>
+                                                    <input type="number" placeholder="40" 
+                                                           class="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Transportadora</label>
+                                            <input type="text" placeholder="Nome da empresa" 
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Motorista Principal</label>
+                                            <input type="text" placeholder="Nome do motorista" 
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Observações</label>
+                                        <textarea rows="3" placeholder="Informações adicionais sobre o veículo"
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                                            <i class="fas fa-save"></i>
+                                            Cadastrar Veículo
+                                        </button>
+                                        <button type="button" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Material Registration Form -->
+                        <div id="material-form" class="hidden p-6">
+                            <div class="max-w-2xl">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Cadastro de Material</h3>
+                                
+                                <form class="space-y-6" data-implementation="Handle material registration">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Material *</label>
+                                            <input type="text" placeholder="Ex: Cimento Portland" 
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Categoria *</label>
+                                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                                <option>Selecionar categoria</option>
+                                                <option>Construção Civil</option>
+                                                <option>Metais</option>
+                                                <option>Químicos</option>
+                                                <option>Outros</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Unidade de Medida</label>
+                                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                                <option>Toneladas</option>
+                                                <option>Quilogramas</option>
+                                                <option>Metros³</option>
+                                                <option>Litros</option>
+                                                <option>Unidades</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Peso Específico</label>
+                                            <input type="number" step="0.01" placeholder="1.5" 
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Classe de Risco</label>
+                                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                                <option>Sem risco</option>
+                                                <option>Classe 1</option>
+                                                <option>Classe 2</option>
+                                                <option>Classe 3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                                        <textarea rows="3" placeholder="Descrição detalhada do material"
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                                            <i class="fas fa-save"></i>
+                                            Cadastrar Material
+                                        </button>
+                                        <button type="button" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Permissions Management -->
+                        <div id="permissions-form" class="hidden p-6">
+                            <div class="max-w-4xl">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Gerenciamento de Permissões</h3>
+                                
+                                <div class="space-y-6">
+                                    <!-- User Selection -->
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Selecionar Usuário</label>
+                                        <div class="flex gap-4">
+                                            <select class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                                <option>Selecionar usuário...</option>
+                                                <option>João Silva - joao@empresa.com</option>
+                                                <option>Maria Santos - maria@empresa.com</option>
+                                                <option>Carlos Lima - carlos@empresa.com</option>
+                                            </select>
+                                            <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                                                Carregar Permissões
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Permission Matrix -->
+                                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                                        <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                                            <h4 class="font-medium text-gray-900">Matriz de Permissões</h4>
+                                        </div>
+                                        <div class="p-4">
+                                            <div class="space-y-4">
+                                                <!-- Dashboard Permissions -->
+                                                <div class="border border-gray-200 rounded-lg p-4">
+                                                    <h5 class="font-medium text-gray-900 mb-3">Dashboard</h5>
+                                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" checked>
+                                                            <span class="ml-2 text-sm text-gray-700">Visualizar</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Editar</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Simplified View Permissions -->
+                                                <div class="border border-gray-200 rounded-lg p-4">
+                                                    <h5 class="font-medium text-gray-900 mb-3">Visualização Simplificada</h5>
+                                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" checked>
+                                                            <span class="ml-2 text-sm text-gray-700">Acessar</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Controlar TV</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Complete View Permissions -->
+                                                <div class="border border-gray-200 rounded-lg p-4">
+                                                    <h5 class="font-medium text-gray-900 mb-3">Visualização Completa</h5>
+                                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" checked>
+                                                            <span class="ml-2 text-sm text-gray-700">Visualizar</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Criar</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Editar</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Excluir</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Registration Permissions -->
+                                                <div class="border border-gray-200 rounded-lg p-4">
+                                                    <h5 class="font-medium text-gray-900 mb-3">Cadastros</h5>
+                                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Veículos</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Materiais</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Permissões</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Reports Permissions -->
+                                                <div class="border border-gray-200 rounded-lg p-4">
+                                                    <h5 class="font-medium text-gray-900 mb-3">Relatórios</h5>
+                                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Visualizar</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Exportar</span>
+                                                        </label>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                                            <span class="ml-2 text-sm text-gray-700">Gerenciais</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                                            <i class="fas fa-save"></i>
+                                            Salvar Permissões
+                                        </button>
+                                        <button type="button" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports View -->
+            <div id="reports-view" class="hidden">
+                <!-- @COMPONENT: ReportsHeader -->
+                <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <button data-event="click:backToHome" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h1 class="text-2xl font-bold text-gray-900">Relatórios</h1>
+                        </div>
+                        <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                            <i class="fas fa-download"></i>
+                            Exportar Dados
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <!-- Report Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Operações Diárias</h3>
+                                    <p class="text-gray-600 text-sm">Movimentação de hoje</p>
+                                </div>
+                                <i class="fas fa-chart-bar text-blue-500 text-2xl"></i>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-3xl font-bold text-gray-900">47</div>
+                                <div class="text-sm text-green-600">+12% desde ontem</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Eficiência</h3>
+                                    <p class="text-gray-600 text-sm">Tempo médio por operação</p>
+                                </div>
+                                <i class="fas fa-clock text-green-500 text-2xl"></i>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-3xl font-bold text-gray-900">2.3h</div>
+                                <div class="text-sm text-green-600">-15min desde ontem</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Ocorrências</h3>
+                                    <p class="text-gray-600 text-sm">Problemas registrados</p>
+                                </div>
+                                <i class="fas fa-exclamation-triangle text-yellow-500 text-2xl"></i>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-3xl font-bold text-gray-900">3</div>
+                                <div class="text-sm text-yellow-600">2 resolvidas</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Placeholder -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Movimentação Semanal</h3>
+                        <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <div class="text-center text-gray-500">
+                                <i class="fas fa-chart-line text-4xl mb-2"></i>
+                                <p>Gráfico de movimentação semanal</p>
+                                <p class="text-sm"><!-- @FUNCTIONALITY: Implement Chart.js or similar charting library --></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Table -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Atividades Recentes</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data/Hora</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Veículo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Operação</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duração</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200" data-mock="true">
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">15/12/2024 14:30</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">ABC-1234</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">Carregamento - Cimento</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                Concluído
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">2h 15min</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">15/12/2024 13:45</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">DEF-5678</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">Descarga - Ferro</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                Concluído
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">1h 45min</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">15/12/2024 12:20</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">GHI-9012</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">Carregamento - Areia</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                Em Progresso
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">2h 10min</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: AuthenticationWrapper -->
+
+    <script>
+        // TODO: Implement Microsoft OAuth integration, session management, and real-time updates
+        // TODO: Add form validation, error handling, and loading states
+        // TODO: Implement business logic for cargo tracking and status updates
+        
+        (function() {
+            // Basic navigation functionality for demo
+            const views = {
+                'login-screen': document.getElementById('login-screen'),
+                'main-app': document.getElementById('main-app'),
+                'dashboard-home': document.getElementById('dashboard-home'),
+                'simplified-view': document.getElementById('simplified-view'),
+                'complete-view': document.getElementById('complete-view'),
+                'registration-view': document.getElementById('registration-view'),
+                'reports-view': document.getElementById('reports-view')
+            };
+
+            function hideAllViews() {
+                Object.values(views).forEach(view => {
+                    if (view) view.classList.add('hidden');
+                });
+            }
+
+            function showView(viewName) {
+                hideAllViews();
+                if (views[viewName]) {
+                    views[viewName].classList.remove('hidden');
+                }
+            }
+
+            // Simulate login
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('[data-event*="handleMicrosoftLogin"]')) {
+                    showView('main-app');
+                    showView('dashboard-home');
+                }
+
+                if (e.target.matches('[data-event*="showSimplifiedView"]')) {
+                    showView('simplified-view');
+                }
+
+                if (e.target.matches('[data-event*="showCompleteView"]')) {
+                    showView('complete-view');
+                }
+
+                if (e.target.matches('[data-event*="showRegistrations"]')) {
+                    showView('registration-view');
+                }
+
+                if (e.target.matches('[data-event*="showReports"]')) {
+                    showView('reports-view');
+                }
+
+                if (e.target.matches('[data-event*="backToHome"]')) {
+                    showView('dashboard-home');
+                }
+            });
+
+            // Registration tabs functionality
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('[data-event*="showVehicleForm"]') || e.target.closest('[data-event*="showVehicleForm"]')) {
+                    document.getElementById('vehicle-form').classList.remove('hidden');
+                    document.getElementById('material-form').classList.add('hidden');
+                    document.getElementById('permissions-form').classList.add('hidden');
+                    
+                    // Update tab styles
+                    document.querySelectorAll('.registration-tab').forEach(tab => {
+                        tab.classList.remove('border-primary', 'text-primary');
+                        tab.classList.add('border-transparent', 'text-gray-500');
+                    });
+                    e.target.classList.add('border-primary', 'text-primary');
+                    e.target.classList.remove('border-transparent', 'text-gray-500');
+                }
+
+                if (e.target.matches('[data-event*="showMaterialForm"]') || e.target.closest('[data-event*="showMaterialForm"]')) {
+                    document.getElementById('vehicle-form').classList.add('hidden');
+                    document.getElementById('material-form').classList.remove('hidden');
+                    document.getElementById('permissions-form').classList.add('hidden');
+                    
+                    // Update tab styles
+                    document.querySelectorAll('.registration-tab').forEach(tab => {
+                        tab.classList.remove('border-primary', 'text-primary');
+                        tab.classList.add('border-transparent', 'text-gray-500');
+                    });
+                    e.target.classList.add('border-primary', 'text-primary');
+                    e.target.classList.remove('border-transparent', 'text-gray-500');
+                }
+
+                if (e.target.matches('[data-event*="showPermissionsForm"]') || e.target.closest('[data-event*="showPermissionsForm"]')) {
+                    document.getElementById('vehicle-form').classList.add('hidden');
+                    document.getElementById('material-form').classList.add('hidden');
+                    document.getElementById('permissions-form').classList.remove('hidden');
+                    
+                    // Update tab styles
+                    document.querySelectorAll('.registration-tab').forEach(tab => {
+                        tab.classList.remove('border-primary', 'text-primary');
+                        tab.classList.add('border-transparent', 'text-gray-500');
+                    });
+                    e.target.classList.add('border-primary', 'text-primary');
+                    e.target.classList.remove('border-transparent', 'text-gray-500');
+                }
+            });
+
+            // Auto-update time for TV display
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('pt-BR');
+                const timeElement = document.querySelector('[data-bind="lastUpdate"]');
+                if (timeElement) {
+                    timeElement.textContent = timeString;
+                }
+            }
+
+            setInterval(updateTime, 1000);
+            updateTime();
+
+        })();
+    </script>
+</body>
+</html>

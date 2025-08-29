@@ -1,0 +1,1630 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Custom colors for cargo sections matching design reference */
+  --scheduled-bg: hsl(214, 100%, 97%);
+  --scheduled-border: hsl(214, 75%, 85%);
+  --scheduled-accent: hsl(207, 90%, 54%);
+  --gate-bg: hsl(142, 76%, 96%);
+  --gate-border: hsl(142, 52%, 82%);
+  --gate-accent: hsl(159, 69%, 38%);
+  --loading-bg: hsl(48, 100%, 96%);
+  --loading-border: hsl(48, 84%, 78%);
+  --loading-accent: hsl(45, 93%, 47%);
+  --unloading-bg: hsl(0, 100%, 97%);
+  --unloading-border: hsl(0, 84%, 86%);
+  --unloading-accent: hsl(0, 84%, 60%);
+  
+  /* Professional logistics theme colors matching design reference */
+  --logistics-blue: hsl(207, 90%, 54%);
+  --logistics-green: hsl(159, 69%, 38%);
+  --logistics-yellow: hsl(45, 93%, 47%);
+  --logistics-red: hsl(0, 84%, 60%);
+  --logistics-gray: hsl(210, 20%, 98%);
+  --logistics-dark: hsl(215, 28%, 17%);
+  
+  /* Navigation card icon backgrounds from design reference */
+  --nav-blue-bg: hsl(214, 100%, 90%);
+  --nav-green-bg: hsl(142, 76%, 90%);
+  --nav-yellow-bg: hsl(48, 100%, 90%);
+  --nav-purple-bg: hsl(266, 100%, 90%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  
+  /* Dark mode cargo section colors */
+  --scheduled-bg: hsl(214, 50%, 10%);
+  --scheduled-border: hsl(214, 50%, 20%);
+  --gate-bg: hsl(142, 50%, 10%);
+  --gate-border: hsl(142, 50%, 20%);
+  --loading-bg: hsl(48, 50%, 10%);
+  --loading-border: hsl(48, 50%, 20%);
+  --unloading-bg: hsl(0, 50%, 10%);
+  --unloading-border: hsl(0, 50%, 20%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  input, textarea, select {
+    @apply transition-colors duration-200;
+  }
+
+  button {
+    @apply transition-all duration-200;
+  }
+}
+
+@layer utilities {
+  /* Cargo section backgrounds and borders matching design reference */
+  .scheduled-section {
+    background-color: var(--scheduled-bg);
+    border-color: var(--scheduled-border);
+  }
+  
+  .gate-section {
+    background-color: var(--gate-bg);
+    border-color: var(--gate-border);
+  }
+  
+  .loading-section {
+    background-color: var(--loading-bg);
+    border-color: var(--loading-border);
+  }
+  
+  .unloading-section {
+    background-color: var(--unloading-bg);
+    border-color: var(--unloading-border);
+  }
+
+  /* Status badge colors matching design reference */
+  .status-scheduled {
+    background-color: var(--scheduled-bg);
+    color: var(--scheduled-accent);
+    border: 1px solid var(--scheduled-border);
+  }
+
+  .status-at_gate {
+    background-color: var(--gate-bg);
+    color: var(--gate-accent);
+    border: 1px solid var(--gate-border);
+  }
+
+  .status-loading {
+    background-color: var(--loading-bg);
+    color: var(--loading-accent);
+    border: 1px solid var(--loading-border);
+  }
+
+  .status-unloading {
+    background-color: var(--unloading-bg);
+    color: var(--unloading-accent);
+    border: 1px solid var(--unloading-border);
+  }
+
+  .status-completed {
+    background-color: hsl(0, 0%, 95%);
+    color: hsl(0, 0%, 45%);
+    border: 1px solid hsl(0, 0%, 85%);
+  }
+
+  /* TV Display optimizations for large screens */
+  .tv-display {
+    font-size: 1.125rem;
+    line-height: 1.5;
+    letter-spacing: 0.025em;
+  }
+
+  .tv-display h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .tv-display h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .tv-display h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .tv-display .card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 0.75rem;
+  }
+
+  /* Login gradient background matching design reference */
+  .login-gradient {
+    background: linear-gradient(135deg, hsl(214, 100%, 97%) 0%, hsl(239, 84%, 95%) 100%);
+  }
+
+  /* Dashboard card hover effects matching design reference */
+  .dashboard-card {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Progress bars for cargo operations */
+  .cargo-progress {
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: hsl(0, 0%, 90%);
+  }
+
+  .cargo-progress-scheduled {
+    background-color: var(--scheduled-accent);
+  }
+
+  .cargo-progress-loading {
+    background-color: var(--loading-accent);
+  }
+
+  .cargo-progress-unloading {
+    background-color: var(--unloading-accent);
+  }
+
+  /* Table enhancements */
+  .table-row:hover {
+    background-color: hsl(60, 4.8%, 98%);
+    transition: background-color 0.15s ease-in-out;
+  }
+
+  /* Professional logistics styling matching design reference */
+  .logistics-header {
+    background: linear-gradient(90deg, var(--logistics-blue) 0%, hsl(207, 90%, 60%) 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+
+  .logistics-card {
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid hsl(0, 0%, 90%);
+    background: white;
+    overflow: hidden;
+  }
+
+  /* Animation for real-time updates */
+  .pulse-update {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  /* Real-time indicator for TV display */
+  .live-indicator {
+    position: relative;
+  }
+
+  .live-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background-color: hsl(142, 76%, 36%);
+    border-radius: 50%;
+    animation: live-pulse 2s infinite;
+  }
+
+  @keyframes live-pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 hsla(142, 76%, 36%, 0.7);
+    }
+    
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px hsla(142, 76%, 36%, 0);
+    }
+    
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 hsla(142, 76%, 36%, 0);
+    }
+  }
+
+  /* Form styling enhancements */
+  .form-section {
+    background: hsl(0, 0%, 99%);
+    border: 1px solid hsl(0, 0%, 92%);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section h4 {
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  /* Loading states */
+  .loading-skeleton {
+    background: linear-gradient(90deg, hsl(0, 0%, 95%) 25%, hsl(0, 0%, 98%) 50%, hsl(0, 0%, 95%) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Mobile responsiveness for TV displays */
+  @media (min-width: 1024px) {
+    .tv-quadrant {
+      min-height: calc(50vh - 2rem);
+    }
+  }
+
+  @media (min-width: 1920px) {
+    .tv-display {
+      font-size: 1.25rem;
+    }
+    
+    .tv-display h1 {
+      font-size: 3rem;
+    }
+    
+    .tv-display h2 {
+      font-size: 2.25rem;
+    }
+
+    .tv-display h3 {
+      font-size: 1.875rem;
+    }
+
+    .tv-quadrant {
+      min-height: calc(50vh - 1rem);
+    }
+  }
+
+  /* Enhanced button styling for logistics theme matching design reference */
+  .btn-logistics {
+    background: linear-gradient(135deg, var(--logistics-blue) 0%, hsl(207, 90%, 60%) 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(47, 133, 230, 0.2);
+  }
+
+  .btn-logistics:hover {
+    background: linear-gradient(135deg, hsl(207, 90%, 48%) 0%, hsl(207, 90%, 54%) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(47, 133, 230, 0.3);
+  }
+
+  .btn-logistics:active {
+    transform: translateY(0);
+  }
+
+  /* Microsoft login button styling matching design reference */
+  .btn-microsoft {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .btn-microsoft:hover {
+    background: hsl(207, 90%, 48%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(47, 133, 230, 0.25);
+  }
+
+  /* Navigation card styling matching design reference */
+  .nav-card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+  }
+
+  .nav-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: hsl(0, 0%, 85%);
+  }
+
+  .nav-card-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .nav-card:hover .nav-card-icon {
+    transform: scale(1.05);
+  }
+
+  /* Navigation card icon colors matching design reference */
+  .nav-card-icon-blue {
+    background-color: var(--nav-blue-bg);
+  }
+
+  .nav-card-icon-green {
+    background-color: var(--nav-green-bg);
+  }
+
+  .nav-card-icon-yellow {
+    background-color: var(--nav-yellow-bg);
+  }
+
+  .nav-card-icon-purple {
+    background-color: var(--nav-purple-bg);
+  }
+
+  /* Status indicators for different sections */
+  .status-indicator {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Quick stats cards matching design reference */
+  .stats-card {
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid;
+    transition: all 0.2s ease;
+  }
+
+  .stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .stats-card-scheduled {
+    background-color: var(--scheduled-bg);
+    border-color: var(--scheduled-border);
+  }
+
+  .stats-card-gate {
+    background-color: var(--gate-bg);
+    border-color: var(--gate-border);
+  }
+
+  .stats-card-loading {
+    background-color: var(--loading-bg);
+    border-color: var(--loading-border);
+  }
+
+  .stats-card-unloading {
+    background-color: var(--unloading-bg);
+    border-color: var(--unloading-border);
+  }
+
+  /* Print styles for reports */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    body {
+      background: white !important;
+      color: black !important;
+      font-size: 12pt;
+    }
+
+    .logistics-card {
+      box-shadow: none;
+      border: 1px solid #000;
+    }
+
+    .dashboard-card:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --border: hsl(0, 0%, 20%);
+      --scheduled-border: hsl(207, 90%, 30%);
+      --gate-border: hsl(159, 69%, 25%);
+      --loading-border: hsl(45, 93%, 30%);
+      --unloading-border: hsl(0, 84%, 35%);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .dashboard-card:hover,
+    .nav-card:hover,
+    .stats-card:hover {
+      transform: none;
+    }
+    
+    .pulse-update {
+      animation: none;
+    }
+    
+    .live-indicator::before {
+      animation: none;
+    }
+    
+    .loading-skeleton {
+      animation: none;
+      background: hsl(0, 0%, 95%);
+    }
+  }
+
+  /* Focus states for accessibility */
+  .focus-visible:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  /* Error states */
+  .error-state {
+    border-color: var(--destructive);
+    background-color: hsl(0, 84.2%, 97%);
+  }
+
+  .error-text {
+    color: var(--destructive);
+  }
+
+  /* Success states */
+  .success-state {
+    border-color: var(--gate-accent);
+    background-color: var(--gate-bg);
+  }
+
+  .success-text {
+    color: var(--gate-accent);
+  }
+
+  /* Data visualization enhancements */
+  .chart-container {
+    position: relative;
+    height: 300px;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid hsl(0, 0%, 90%);
+    padding: 1rem;
+  }
+
+  .metric-card {
+    background: linear-gradient(135deg, white 0%, hsl(0, 0%, 99%) 100%);
+    border: 1px solid hsl(0, 0%, 90%);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary);
+  }
+
+  .metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--foreground);
+  }
+
+  .metric-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .metric-change {
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .metric-change.positive {
+    color: var(--gate-accent);
+  }
+
+  .metric-change.negative {
+    color: var(--unloading-accent);
+  }
+
+  /* Professional typography hierarchy */
+  .typography-h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+
+  .typography-h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+  }
+
+  .typography-h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .typography-body {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .typography-small {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+
+  /* Enhanced cargo card styling for TV display matching design reference */
+  .cargo-card-tv {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .cargo-card-tv:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .cargo-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .cargo-card-vehicle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cargo-card-plate {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(20, 14.3%, 4.1%);
+    margin: 0;
+  }
+
+  .cargo-card-driver {
+    font-size: 0.875rem;
+    color: hsl(25, 5.3%, 44.7%);
+    margin: 0;
+  }
+
+  .cargo-card-time {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .cargo-card-date {
+    font-size: 0.75rem;
+    color: hsl(25, 5.3%, 44.7%);
+    margin: 0;
+  }
+
+  .cargo-card-hour {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .cargo-card-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .cargo-card-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .cargo-card-detail-label {
+    color: hsl(25, 5.3%, 44.7%);
+  }
+
+  .cargo-card-detail-value {
+    font-weight: 500;
+    color: hsl(20, 14.3%, 4.1%);
+  }
+
+  /* Progress bar specific styling */
+  .cargo-progress-container {
+    margin-top: 0.75rem;
+  }
+
+  .cargo-progress-bar {
+    width: 100%;
+    height: 0.5rem;
+    background-color: hsl(0, 0%, 90%);
+    border-radius: 0.25rem;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+  }
+
+  .cargo-progress-fill {
+    height: 100%;
+    border-radius: 0.25rem;
+    transition: width 0.3s ease;
+  }
+
+  .cargo-progress-text {
+    font-size: 0.75rem;
+    color: hsl(25, 5.3%, 44.7%);
+  }
+
+  /* Status-specific progress colors */
+  .cargo-progress-loading .cargo-progress-fill {
+    background-color: var(--loading-accent);
+  }
+
+  .cargo-progress-unloading .cargo-progress-fill {
+    background-color: var(--unloading-accent);
+  }
+
+  /* Empty state styling */
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: hsl(25, 5.3%, 44.7%);
+  }
+
+  .empty-state-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 0.5rem;
+    opacity: 0.5;
+  }
+
+  .empty-state-text {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  /* Real-time update animations */
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slideInUp 0.3s ease-out;
+  }
+
+  /* Enhanced responsive design */
+  @media (max-width: 768px) {
+    .tv-display h1 {
+      font-size: 1.75rem;
+    }
+    
+    .tv-display h2 {
+      font-size: 1.5rem;
+    }
+    
+    .tv-quadrant-title {
+      font-size: 1.5rem;
+    }
+    
+    .cargo-card-details {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
+
+  /* Loading spinner for cargo operations */
+  .loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-left-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Notification styling */
+  .notification-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: hsl(0, 84%, 60%);
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+
+  /* Enhanced table styling for complete view */
+  .data-table {
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .data-table-header {
+    background: hsl(60, 4.8%, 95.9%);
+    border-bottom: 1px solid hsl(20, 5.9%, 90%);
+  }
+
+  .data-table-row:hover {
+    background-color: hsl(60, 4.8%, 98%);
+  }
+
+  .data-table-cell {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    border-bottom: 1px solid hsl(20, 5.9%, 90%);
+  }
+
+  /* Form enhancements */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(20, 14.3%, 4.1%);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid hsl(20, 5.9%, 90%);
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(47, 133, 230, 0.1);
+  }
+
+  .form-error {
+    color: var(--destructive);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  /* Permission matrix styling */
+  .permission-matrix {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .permission-section {
+    border: 1px solid hsl(20, 5.9%, 90%);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  .permission-section-title {
+    font-weight: 600;
+    color: hsl(20, 14.3%, 4.1%);
+    margin-bottom: 0.75rem;
+  }
+
+  .permission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .permission-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .permission-checkbox {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .permission-label {
+    font-size: 0.875rem;
+    color: hsl(20, 14.3%, 4.1%);
+  }
+
+  /* Report cards styling matching design reference */
+  .report-card {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border-left: 4px solid;
+  }
+
+  .report-card-scheduled {
+    border-left-color: var(--scheduled-accent);
+  }
+
+  .report-card-gate {
+    border-left-color: var(--gate-accent);
+  }
+
+  .report-card-loading {
+    border-left-color: var(--loading-accent);
+  }
+
+  .report-card-unloading {
+    border-left-color: var(--unloading-accent);
+  }
+
+  .report-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .report-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: hsl(20, 14.3%, 4.1%);
+    margin: 0;
+  }
+
+  .report-card-subtitle {
+    font-size: 0.875rem;
+    color: hsl(25, 5.3%, 44.7%);
+    margin: 0;
+  }
+
+  .report-card-icon {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.7;
+  }
+
+  .report-card-metric {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: hsl(20, 14.3%, 4.1%);
+    margin-bottom: 0.25rem;
+  }
+
+  .report-card-change {
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .report-card-change.positive {
+    color: var(--gate-accent);
+  }
+
+  .report-card-change.negative {
+    color: var(--unloading-accent);
+  }
+
+  .report-card-change.neutral {
+    color: hsl(25, 5.3%, 44.7%);
+  }
+
+  /* Filter bar styling */
+  .filter-bar {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .filter-search {
+    flex: 1;
+    min-width: 16rem;
+    position: relative;
+  }
+
+  .filter-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    color: hsl(25, 5.3%, 44.7%);
+  }
+
+  .filter-search-input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid hsl(20, 5.9%, 90%);
+    border-radius: 0.375rem;
+    font-size: 1rem;
+  }
+
+  .filter-select {
+    min-width: 8rem;
+  }
+
+  /* Pagination styling */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: between;
+    padding: 1rem 1.5rem;
+    background: white;
+    border-top: 1px solid hsl(20, 5.9%, 90%);
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  .pagination-info {
+    font-size: 0.875rem;
+    color: hsl(25, 5.3%, 44.7%);
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pagination-button {
+    padding: 0.5rem;
+    border: 1px solid hsl(20, 5.9%, 90%);
+    background: white;
+    border-radius: 0.375rem;
+    color: hsl(25, 5.3%, 44.7%);
+    transition: all 0.2s ease;
+  }
+
+  .pagination-button:hover {
+    background: hsl(60, 4.8%, 95.9%);
+    border-color: hsl(20, 5.9%, 80%);
+  }
+
+  .pagination-button.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pagination-button:disabled:hover {
+    background: white;
+    border-color: hsl(20, 5.9%, 90%);
+  }
+
+  /* TV quadrant header styling matching design reference */
+  .tv-quadrant-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .tv-quadrant-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .tv-quadrant-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .tv-quadrant-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.8;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  /* TV quadrant icon colors matching design reference */
+  .tv-quadrant-icon-scheduled {
+    background-color: hsl(207, 90%, 54%);
+    color: white;
+  }
+
+  .tv-quadrant-icon-gate {
+    background-color: hsl(159, 69%, 38%);
+    color: white;
+  }
+
+  .tv-quadrant-icon-loading {
+    background-color: hsl(45, 93%, 47%);
+    color: white;
+  }
+
+  .tv-quadrant-icon-unloading {
+    background-color: hsl(0, 84%, 60%);
+    color: white;
+  }
+
+  /* TV quadrant title colors matching design reference */
+  .tv-quadrant-title-scheduled {
+    color: hsl(207, 90%, 20%);
+  }
+
+  .tv-quadrant-title-gate {
+    color: hsl(159, 69%, 20%);
+  }
+
+  .tv-quadrant-title-loading {
+    color: hsl(45, 93%, 25%);
+  }
+
+  .tv-quadrant-title-unloading {
+    color: hsl(0, 84%, 25%);
+  }
+
+  /* TV quadrant subtitle colors matching design reference */
+  .tv-quadrant-subtitle-scheduled {
+    color: hsl(207, 70%, 40%);
+  }
+
+  .tv-quadrant-subtitle-gate {
+    color: hsl(159, 50%, 40%);
+  }
+
+  .tv-quadrant-subtitle-loading {
+    color: hsl(45, 70%, 40%);
+  }
+
+  .tv-quadrant-subtitle-unloading {
+    color: hsl(0, 70%, 40%);
+  }
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(60, 4.8%, 95.9%);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(25, 5.3%, 44.7%);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(20, 14.3%, 4.1%);
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: hsl(60, 4.8%, 95.9%);
+}
+
+/* Firefox scrollbar styling */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(25, 5.3%, 44.7%) hsl(60, 4.8%, 95.9%);
+}
+
+/* Selection styling */
+::selection {
+  background-color: hsl(207, 90%, 54%, 0.2);
+  color: var(--foreground);
+}
+
+::-moz-selection {
+  background-color: hsl(207, 90%, 54%, 0.2);
+  color: var(--foreground);
+}
+
+/* Utility classes for spacing */
+.space-y-section > * + * {
+  margin-top: 2rem;
+}
+
+.space-y-card > * + * {
+  margin-top: 1rem;
+}
+
+/* Microsoft login gradient background matching design reference */
+.microsoft-login-bg {
+  background: linear-gradient(135deg, hsl(214, 100%, 97%) 0%, hsl(239, 84%, 95%) 100%);
+}
+
+/* Stats card number colors matching design reference */
+.stats-number-scheduled {
+  color: hsl(207, 90%, 20%);
+}
+
+.stats-number-gate {
+  color: hsl(159, 69%, 20%);
+}
+
+.stats-number-loading {
+  color: hsl(45, 93%, 25%);
+}
+
+.stats-number-unloading {
+  color: hsl(0, 84%, 25%);
+}
+
+/* Stats card text colors matching design reference */
+.stats-text-scheduled {
+  color: hsl(207, 70%, 40%);
+}
+
+.stats-text-gate {
+  color: hsl(159, 50%, 40%);
+}
+
+.stats-text-loading {
+  color: hsl(45, 70%, 40%);
+}
+
+.stats-text-unloading {
+  color: hsl(0, 70%, 40%);
+}
+
+/* Professional button styling for form actions */
+.btn-primary-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, hsl(207, 90%, 60%) 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(47, 133, 230, 0.2);
+}
+
+.btn-primary-gradient:hover {
+  background: linear-gradient(135deg, hsl(207, 90%, 48%) 0%, hsl(207, 90%, 54%) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(47, 133, 230, 0.3);
+}
+
+/* Enhanced shadow for card components */
+.shadow-logistics {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.shadow-logistics-hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Real-time data indicator */
+.real-time-indicator {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.real-time-indicator::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: hsl(142, 76%, 36%);
+  border-radius: 50%;
+  animation: live-pulse 2s infinite;
+}
+
+/* TV display container for full screen optimization */
+.tv-container {
+  min-height: 100vh;
+  background: hsl(215, 28%, 17%);
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.tv-header {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.tv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  height: calc(100vh - 140px);
+}
+
+.tv-quadrant {
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  overflow-y: auto;
+  border: 1px solid;
+}
+
+/* Company branding colors */
+.brand-primary {
+  color: var(--primary);
+}
+
+.brand-logo-bg {
+  background: var(--primary);
+  color: white;
+}
+
+/* Enhanced focus states for better accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Responsive typography scaling */
+@media (min-width: 768px) {
+  .responsive-text-lg {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-text-lg {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .responsive-text-lg {
+    font-size: 1.5rem;
+  }
+}
+
+/* High-quality card transitions matching design reference */
+.card-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Professional form styling */
+.professional-form {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.professional-form h3 {
+  color: hsl(20, 14.3%, 4.1%);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
+}
+
+/* Status badge styling to match design reference exactly */
+.badge-scheduled {
+  background-color: hsl(214, 100%, 95%);
+  color: hsl(207, 90%, 54%);
+  border: 1px solid hsl(214, 75%, 85%);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-at-gate {
+  background-color: hsl(142, 76%, 95%);
+  color: hsl(159, 69%, 38%);
+  border: 1px solid hsl(142, 52%, 82%);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-loading {
+  background-color: hsl(48, 100%, 95%);
+  color: hsl(45, 93%, 47%);
+  border: 1px solid hsl(48, 84%, 78%);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-unloading {
+  background-color: hsl(0, 100%, 95%);
+  color: hsl(0, 84%, 60%);
+  border: 1px solid hsl(0, 84%, 86%);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-completed {
+  background-color: hsl(0, 0%, 95%);
+  color: hsl(0, 0%, 45%);
+  border: 1px solid hsl(0, 0%, 85%);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Last update time styling for TV display */
+.last-update {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: hsl(20, 14.3%, 4.1%);
+}
+
+.last-update-label {
+  font-size: 0.875rem;
+  color: hsl(25, 5.3%, 44.7%);
+}
+
+/* Company security notice styling */
+.security-notice {
+  background: hsl(60, 4.8%, 95.9%);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: hsl(25, 5.3%, 44.7%);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.security-notice-icon {
+  color: hsl(25, 5.3%, 44.7%);
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Professional gradient overlays */
+.gradient-overlay-blue {
+  background: linear-gradient(135deg, hsl(214, 100%, 97%) 0%, hsl(207, 90%, 96%) 100%);
+}
+
+.gradient-overlay-green {
+  background: linear-gradient(135deg, hsl(142, 76%, 96%) 0%, hsl(159, 69%, 94%) 100%);
+}
+
+.gradient-overlay-yellow {
+  background: linear-gradient(135deg, hsl(48, 100%, 96%) 0%, hsl(45, 93%, 94%) 100%);
+}
+
+.gradient-overlay-red {
+  background: linear-gradient(135deg, hsl(0, 100%, 97%) 0%, hsl(0, 84%, 95%) 100%);
+}
+
+/* Enhanced spacing system */
+.spacing-xs { margin: 0.25rem; }
+.spacing-sm { margin: 0.5rem; }
+.spacing-md { margin: 1rem; }
+.spacing-lg { margin: 1.5rem; }
+.spacing-xl { margin: 2rem; }
+
+.spacing-x-xs { margin-left: 0.25rem; margin-right: 0.25rem; }
+.spacing-x-sm { margin-left: 0.5rem; margin-right: 0.5rem; }
+.spacing-x-md { margin-left: 1rem; margin-right: 1rem; }
+.spacing-x-lg { margin-left: 1.5rem; margin-right: 1.5rem; }
+.spacing-x-xl { margin-left: 2rem; margin-right: 2rem; }
+
+.spacing-y-xs { margin-top: 0.25rem; margin-bottom: 0.25rem; }
+.spacing-y-sm { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+.spacing-y-md { margin-top: 1rem; margin-bottom: 1rem; }
+.spacing-y-lg { margin-top: 1.5rem; margin-bottom: 1.5rem; }
+.spacing-y-xl { margin-top: 2rem; margin-bottom: 2rem; }
+
+/* Professional border radius system */
+.radius-sm { border-radius: 0.25rem; }
+.radius-md { border-radius: 0.5rem; }
+.radius-lg { border-radius: 0.75rem; }
+.radius-xl { border-radius: 1rem; }
+.radius-full { border-radius: 9999px; }
+
+/* Enhanced text hierarchy matching design reference */
+.text-logistics-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: hsl(20, 14.3%, 4.1%);
+  letter-spacing: -0.025em;
+}
+
+.text-logistics-subtitle {
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: hsl(25, 5.3%, 44.7%);
+}
+
+.text-logistics-body {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: hsl(20, 14.3%, 4.1%);
+}
+
+.text-logistics-caption {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: hsl(25, 5.3%, 44.7%);
+}
+
+.text-logistics-small {
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: hsl(25, 5.3%, 44.7%);
+}
