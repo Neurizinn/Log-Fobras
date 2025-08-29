@@ -18,7 +18,7 @@ import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function Registrations() {
-  const { checkAuthStatus, hasPermission } = useAuth()
+  const { checkAuthStatus, hasPermission, refreshUser } = useAuth()
   const [activeTab, setActiveTab] = useState("vehicles");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { toast } = useToast();
@@ -56,19 +56,6 @@ export default function Registrations() {
     },
   })
 
-  const searchPermission = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("GET", "/api/auth/me");
-      return response.json();
-    },
-    onSuccess: (data) => {
-      console.log(data)
-    },
-    onError: () => {
-      console.log("erro")
-    },
-  });
-
   const updatePermissions = useMutation({
     mutationFn: async (data: string[]) => {
       if (!selectedUser) throw new Error("Nenhum usuário selecionado");
@@ -79,7 +66,7 @@ export default function Registrations() {
         { permissions: data }
       );
 
-      checkAuthStatus()
+      await refreshUser();
       return response.json();
     },
     onSuccess: () => {
@@ -150,8 +137,6 @@ export default function Registrations() {
       permsForm.reset({
         permissions: selectedUser.permissions || [],
       });
-
-      console.log(permsForm)
     }
   }, [selectedUser, permsForm]);
 
@@ -159,7 +144,6 @@ export default function Registrations() {
     queryKey: ["users"],
     queryFn: async () => {
       const res = await apiRequest("GET", "/api/users");
-      console.log(res)
       return res.json(); // retorna array de usuários
     },
   });
@@ -177,7 +161,8 @@ export default function Registrations() {
     { value: "register:perms", label: "Cadastro de Permissões"},
     { value: "report:view", label: "Visualizar Relatório"},
     { value: "report:export", label: "Exportar Relatório"},
-    { value: "report:management", label: "Gerencias de Relatório"}
+    { value: "report:management", label: "Gerencias de Relatório"},
+    { value: "logs:view", label: "Visualizar Logs"}
   ];
 
   const onVehicleSubmit = (data: any) => {
@@ -186,10 +171,6 @@ export default function Registrations() {
 
   const onMaterialSubmit = (data: any) => {
     createMaterialMutation.mutate(data);
-  };
-
-  const onSeachPermission = () => {
-    searchPermission.mutate()
   };
 
   const watchVehicleType = vehicleForm.watch("type");
@@ -573,11 +554,6 @@ export default function Registrations() {
                           ))}
                         </SelectContent>
                       </Select>
-                      {/* <Button 
-                        onClick={onSeachPermission}
-                        className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                        Carregar Permissões
-                      </Button> */}
                     </div>
                   </div>
 

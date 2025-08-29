@@ -6,6 +6,8 @@ import { z } from "zod";
 export const userRoleEnum = pgEnum("user_role", ["admin", "operator", "viewer"]);
 export const vehicleTypeEnum = pgEnum("vehicle_type", ["truck", "carreta"]);
 export const operationStatusEnum = pgEnum("operation_status", ["scheduled", "at_gate", "loading", "unloading", "completed"]);
+export const logLevelEnum = pgEnum("log_level", ["info", "warn", "error", "debug"]);
+export const logSourceEnum = pgEnum("log_source", ["server", "client"]);
 
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -60,6 +62,20 @@ export const operations = pgTable("operations", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const logs = pgTable("logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  level: logLevelEnum("level").notNull(),
+  source: logSourceEnum("source").notNull(),
+  message: text("message").notNull(),
+  details: text("details"), // JSON string for additional context
+  userId: varchar("user_id").references(() => users.id),
+  requestId: text("request_id"),
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  stackTrace: text("stack_trace"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const operationsRelations = relations(operations, ({ one }) => ({
   vehicle: one(vehicles, {
     fields: [operations.vehicleId],
@@ -94,10 +110,22 @@ export const insertMaterialSchema = createInsertSchema(materials).omit({
   createdAt: true,
 });
 
-export const insertOperationSchema = createInsertSchema(operations).omit({
+export const insertOperationSchema = createInsertSchema(operations, {
+  scheduledDate: z.union([z.date(), z.string()]).transform((val) => {
+    if (typeof val === "string") {
+      return new Date(val);
+    }
+    return val;
+  }).nullable().optional(),
+}).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertLogSchema = createInsertSchema(logs).omit({
+  id: true,
+  createdAt: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -116,3 +144,6 @@ export type OperationWithRelations = Operation & {
   vehicle: Vehicle;
   material: Material;
 };
+
+export type InsertLog = z.infer<typeof insertLogSchema>;
+export type Log = typeof logs.$inferSelect;

@@ -7,7 +7,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { 
   Tv, 
   ChartLine, 
-  PlusCircle, 
+  PlusCircle,
+  Logs,
   FileChartPie,
   Calendar,
   DoorOpen,
@@ -17,10 +18,11 @@ import {
 
 export default function Dashboard() {
   const { hasPermission } = useAuth()
-  console.log(hasPermission("simplified:view"))
   const { data: stats } = useQuery({
     queryKey: ["/api/stats"],
   });
+
+  console.log(stats)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -34,19 +36,19 @@ export default function Dashboard() {
           </div>
 
           {/* Main Navigation Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
             {/* Visualização Simplificada */}
 
             {hasPermission("simplified:view") && (
               <Link href="/simplified-view">
                 <Button
                   variant="ghost"
-                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex-col items-start w-full"
+                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex flex-col items-start w-full whitespace-normal"
                 >
                   <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
                     <Tv className="text-primary text-xl w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Visualização Simplificada</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Simplificado</h3>
                   <p className="text-gray-600 text-sm text-left">Painel para exibição em TVs com status em tempo real</p>
                 </Button>
               </Link>
@@ -57,12 +59,12 @@ export default function Dashboard() {
               <Link href="/complete-view">
                 <Button
                   variant="ghost"
-                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex-col items-start w-full"
+                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex flex-col items-start w-full whitespace-normal"
                 >
                   <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
                     <ChartLine className="text-green-600 text-xl w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Visualização Completa</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Dashboard</h3>
                   <p className="text-gray-600 text-sm text-left">Interface técnica com controles avançados</p>
                 </Button>
               </Link>
@@ -73,7 +75,7 @@ export default function Dashboard() {
               <Link href="/registrations">
                 <Button
                   variant="ghost"
-                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex-col items-start w-full"
+                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex flex-col items-start w-full whitespace-normal"
                 >
                   <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-yellow-200 transition-colors">
                     <PlusCircle className="text-yellow-600 text-xl w-6 h-6" />
@@ -90,13 +92,28 @@ export default function Dashboard() {
               <Link href="/reports">
                 <Button
                   variant="ghost"
-                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex-col items-start w-full"
+                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex flex-col items-start w-full whitespace-normal"
                 >
                   <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
                     <FileChartPie className="text-purple-600 text-xl w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Relatórios</h3>
                   <p className="text-gray-600 text-sm text-left">Análises e estatísticas de operações</p>
+                </Button>
+              </Link>
+            )}
+
+            {hasPermission("logs:view") && (
+              <Link href="/logs">
+                <Button
+                  variant="ghost"
+                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 text-left group h-auto flex flex-col items-start w-full whitespace-normal"
+                >
+                  <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-yellow-200 transition-colors">
+                    <Logs className="text-yellow-600 text-xl w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Logs</h3>
+                  <p className="text-gray-600 text-sm text-left">Visualizar Logs de erros, informações e debug</p>
                 </Button>
               </Link>
             )}

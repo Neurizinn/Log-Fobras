@@ -11,6 +11,7 @@ import SimplifiedView from "@/pages/simplified-view";
 import CompleteView from "@/pages/complete-view";
 import Registrations from "@/pages/registrations";
 import Reports from "@/pages/reports";
+import Logs from "@/pages/logs";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function AuthenticatedRoutes() {
@@ -39,6 +40,7 @@ function AuthenticatedRoutes() {
       <Route path="/complete-view" component={CompleteView} />
       <Route path="/registrations" component={Registrations} />
       <Route path="/reports" component={Reports} />
+      <Route path="/logs" component={Logs} />
       <Route component={NotFound} />
     </Switch>
   );

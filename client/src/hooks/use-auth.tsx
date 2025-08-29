@@ -9,6 +9,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   hasPermission: (permission: string) => boolean;
   checkAuthStatus: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -74,14 +75,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshUser = async () => {
-    const res = await fetch("/api/me");
-    const data = await res.json();
-    setUser(data);
+    try {
+      const result = await authService.getCurrentUser();
+      setUser(result?.user || null);
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+    }
   };
 
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, hasPermission, checkAuthStatus }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, hasPermission, checkAuthStatus, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

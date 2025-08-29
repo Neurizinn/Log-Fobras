@@ -1,9 +1,16 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Navbar } from "@/components/navbar";
 import { 
   Plus, 
@@ -14,17 +21,83 @@ import {
   Eye,
   ChevronLeft,
   ChevronRight,
-  Truck
+  Truck,
+  CalendarIcon,
+  Save,
+  X
 } from "lucide-react";
 import { Link } from "wouter";
-import { type OperationWithRelations } from "@shared/schema";
+import { type OperationWithRelations, type Vehicle, type Material, insertOperationSchema } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
+import { queryClient, apiRequest } from "@/lib/queryClient";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 export default function CompleteView() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { toast } = useToast();
   
   const { data: operations = [] } = useQuery<OperationWithRelations[]>({
     queryKey: ["/api/operations"],
+  });
+
+  const { data: vehicles = [] } = useQuery<Vehicle[]>({
+    queryKey: ["/api/vehicles"],
+  });
+
+  const { data: materials = [] } = useQuery<Material[]>({
+    queryKey: ["/api/materials"],
+  });
+
+  // Form para novo agendamento
+  const form = useForm({
+    resolver: zodResolver(insertOperationSchema),
+    defaultValues: {
+      vehicleId: "",
+      materialId: "",
+      type: "loading" as const,
+      driver: "",
+      transportCompany: "",
+      destination: "",
+      origin: "",
+      scheduledDate: new Date(),
+      scheduledTime: "",
+      notes: "",
+    },
+  });
+
+  // Mutation para criar agendamento
+  const createScheduleMutation = useMutation({
+    mutationFn: async (data: any) => {
+      // Garantir que scheduledDate seja uma data válida
+      const processedData = {
+        ...data,
+        scheduledDate: data.scheduledDate ? new Date(data.scheduledDate).toISOString() : null,
+      };
+      console.log("Dados enviados:", processedData); // Para debug
+      const response = await apiRequest("POST", "/api/operations", processedData);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Agendamento criado",
+        description: "O agendamento foi criado com sucesso!",
+      });
+      form.reset();
+      setIsModalOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["/api/operations"] });
+    },
+    onError: (error: any) => {
+      console.error("Erro ao criar agendamento:", error); // Para debug
+      toast({
+        title: "Erro",
+        description: error?.message || "Não foi possível criar o agendamento",
+        variant: "destructive",
+      });
+    },
   });
 
   const filteredOperations = operations.filter(operation => {
@@ -87,10 +160,246 @@ export default function CompleteView() {
             <h1 className="text-2xl font-bold text-gray-900">Visualização Completa</h1>
           </div>
           <div className="flex items-center gap-4">
-            <Button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-              <Plus className="w-4 h-4" />
-              Novo Agendamento
-            </Button>
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  Novo Agendamento
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Criar Novo Agendamento</DialogTitle>
+                </DialogHeader>
+                
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit((data) => createScheduleMutation.mutate(data))} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="vehicleId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Veículo</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Selecionar veículo" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {vehicles.map((vehicle) => (
+                                  <SelectItem key={vehicle.id} value={vehicle.id}>
+                                    {vehicle.plate} - {vehicle.type}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="materialId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Material</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Selecionar material" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {materials.map((material) => (
+                                  <SelectItem key={material.id} value={material.id}>
+                                    {material.name} - {material.category}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="type"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Tipo de Operação</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Selecionar tipo" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="loading">Carregamento</SelectItem>
+                                <SelectItem value="unloading">Descarregamento</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="scheduledTime"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Horário Agendado</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="time"
+                                placeholder="HH:MM" 
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="driver"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Motorista</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nome do motorista" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="transportCompany"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Transportadora</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nome da transportadora" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name={form.watch("type") === "loading" ? "destination" : "origin"}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {form.watch("type") === "loading" ? "Destino" : "Origem"}
+                            </FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder={form.watch("type") === "loading" ? "Local de destino" : "Local de origem"} 
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="scheduledDate"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Data Agendada</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full pl-3 text-left font-normal",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "dd/MM/yyyy", { locale: ptBR })
+                                    ) : (
+                                      <span>Selecionar data</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  disabled={(date) =>
+                                    date < new Date()
+                                  }
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="notes"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Observações</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Observações adicionais..." 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={() => setIsModalOpen(false)}
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        Cancelar
+                      </Button>
+                      <Button 
+                        type="submit"
+                        disabled={createScheduleMutation.isPending}
+                        className="flex items-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        {createScheduleMutation.isPending ? "Criando..." : "Criar Agendamento"}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
             <Button variant="outline" className="flex items-center gap-2">
               <Download className="w-4 h-4" />
               Exportar
@@ -216,7 +525,7 @@ export default function CompleteView() {
                               {operation.status === "scheduled" ? "Aguardando" : "Em processo"}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {operation.scheduledTime || new Date(operation.createdAt).toLocaleTimeString('pt-BR')}
+                              {operation.scheduledTime || (operation.createdAt ? new Date(operation.createdAt).toLocaleTimeString('pt-BR') : 'Horário não definido')}
                             </div>
                           </div>
                         )}

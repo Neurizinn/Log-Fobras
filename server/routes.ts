@@ -1,12 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertVehicleSchema, insertMaterialSchema, insertOperationSchema } from "@shared/schema";
+import { insertUserSchema, insertVehicleSchema, insertMaterialSchema, insertOperationSchema, insertLogSchema } from "@shared/schema";
 import session from "express-session";
 import ConnectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import { logger, createRequestLogger, getRequestInfo } from "./logger";
+import { nanoid } from "nanoid";
 
 const clientId = "0cd62e78-c77c-40b9-9956-b0ec588a3149"
 const tenantId = "7f6df389-4d9f-4f42-9469-440704f55abe"
@@ -16,6 +18,58 @@ const secret = "5iT8Q~eQPfMI92.~KzD1EEtiy1Pqk4xkf.FnqaLe"
 const PgSession = ConnectPgSimple(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Request logging middleware
+  app.use((req: any, res, next) => {
+    const requestId = nanoid(10);
+    const startTime = Date.now();
+    req.requestId = requestId;
+    req.logger = createRequestLogger(requestId);
+    
+    const requestInfo = getRequestInfo(req);
+    
+    // Log incoming request
+    req.logger.info(`Incoming ${req.method} ${req.path}`, {
+      ...requestInfo,
+      details: {
+        method: req.method,
+        path: req.path,
+        query: req.query,
+        userAgent: requestInfo.userAgent,
+        ipAddress: requestInfo.ipAddress
+      }
+    });
+
+    // Override res.json to log responses
+    const originalJson = res.json;
+    res.json = function(body: any) {
+      const duration = Date.now() - startTime;
+      req.logger.logRequest(req.method, req.path, res.statusCode, duration, {
+        ...requestInfo,
+        details: {
+          requestId,
+          responseBody: typeof body === 'object' ? Object.keys(body) : typeof body
+        }
+      });
+      return originalJson.call(this, body);
+    };
+
+    next();
+  });
+
+  // Global error handler middleware
+  app.use((err: any, req: any, res: any, next: any) => {
+    const requestInfo = getRequestInfo(req);
+    req.logger?.logError(err, {
+      ...requestInfo,
+      details: {
+        path: req.path,
+        method: req.method,
+        requestId: req.requestId
+      }
+    });
+    next(err);
+  });
+
   // Session configuration
   app.use(session({
     store: new PgSession({
@@ -246,9 +300,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const operationData = insertOperationSchema.parse(req.body);
       const operation = await storage.createOperation(operationData);
+      req.logger?.info(`Operation created: ${operation.id}`, getRequestInfo(req));
       res.json(operation);
     } catch (error) {
-      res.status(400).json({ message: "Dados inválidos para criação de operação" });
+      req.logger?.logError(error as Error, getRequestInfo(req));
+      if (error instanceof Error && error.message.includes('Expected')) {
+        // Erro de validação Zod - retorna detalhes específicos
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "Dados inválidos para criação de operação" });
+      }
     }
   });
 
@@ -306,14 +367,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User permissions
-  app.put("/api/users/:id/permissions", requireAuth, async (req, res) => {
+  app.put("/api/users/:id/permissions", requireAuth, async (req: any, res) => {
     try {
       const { id } = req.params;
       const { permissions } = req.body;
       const user = await storage.updateUserPermissions(id, permissions);
+      
+      // Se as permissões atualizadas são do usuário logado, atualizar a sessão
+      if (req.session.user && req.session.user.id === id) {
+        req.session.user = { ...req.session.user, permissions };
+      }
+      
       res.json(user);
     } catch (error) {
       res.status(400).json({ message: "Erro ao atualizar permissões" });
+    }
+  });
+
+  // Logs routes
+  app.get("/api/logs", requireAuth, async (req: any, res) => {
+    try {
+      const { limit, level, source } = req.query;
+      const logs = await storage.getLogs(
+        limit ? parseInt(limit as string) : undefined,
+        level as string,
+        source as string
+      );
+      res.json(logs);
+    } catch (error) {
+      req.logger?.logError(error as Error, getRequestInfo(req));
+      res.status(500).json({ message: "Erro ao buscar logs" });
+    }
+  });
+
+  // Client log endpoint
+  app.post("/api/logs/client", async (req: any, res) => {
+    try {
+      const { level, message, details, stackTrace } = req.body;
+      const requestInfo = getRequestInfo(req);
+      
+      await req.logger?.clientLog(level, message, {
+        ...requestInfo,
+        details: details ? JSON.parse(details) : undefined,
+        stackTrace
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      req.logger?.logError(error as Error, getRequestInfo(req));
+      res.status(500).json({ message: "Erro ao salvar log do cliente" });
+    }
+  });
+
+  // Clean old logs (maintenance endpoint)
+  app.delete("/api/logs/cleanup", requireAuth, async (req: any, res) => {
+    try {
+      const { days = 30 } = req.query;
+      await storage.deleteOldLogs(parseInt(days as string));
+      req.logger?.info(`Cleaned logs older than ${days} days`, getRequestInfo(req));
+      res.json({ message: `Logs mais antigos que ${days} dias foram removidos` });
+    } catch (error) {
+      req.logger?.logError(error as Error, getRequestInfo(req));
+      res.status(500).json({ message: "Erro ao limpar logs" });
     }
   });
 

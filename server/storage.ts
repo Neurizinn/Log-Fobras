@@ -1,10 +1,11 @@
 import { 
-  users, vehicles, materials, operations,
+  users, vehicles, materials, operations, logs,
   type User, type InsertUser,
   type Vehicle, type InsertVehicle,
   type Material, type InsertMaterial,
   type Operation, type InsertOperation,
-  type OperationWithRelations
+  type OperationWithRelations,
+  type Log, type InsertLog
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, like } from "drizzle-orm";
@@ -39,6 +40,11 @@ export interface IStorage {
   createOperation(operation: InsertOperation): Promise<Operation>;
   updateOperation(id: string, operation: Partial<InsertOperation>): Promise<Operation>;
   deleteOperation(id: string): Promise<void>;
+  
+  // Logs
+  getLogs(limit?: number, level?: string, source?: string): Promise<Log[]>;
+  createLog(log: InsertLog): Promise<Log>;
+  deleteOldLogs(daysOld: number): Promise<void>;
   
   // Dashboard stats
   getStats(): Promise<{
@@ -250,6 +256,34 @@ export class DatabaseStorage implements IStorage {
       loading: loading.length,
       unloading: unloading.length,
     };
+  }
+
+  // Log management
+  async getLogs(limit = 100, level?: string, source?: string): Promise<Log[]> {
+    let query = db.select().from(logs).orderBy(desc(logs.createdAt));
+    
+    if (level || source) {
+      const conditions = [];
+      if (level) conditions.push(eq(logs.level, level as any));
+      if (source) conditions.push(eq(logs.source, source as any));
+      query = query.where(and(...conditions)) as any;
+    }
+    
+    return await query.limit(limit);
+  }
+
+  async createLog(log: InsertLog): Promise<Log> {
+    const [newLog] = await db.insert(logs).values(log).returning();
+    return newLog;
+  }
+
+  async deleteOldLogs(daysOld: number): Promise<void> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysOld);
+    
+    await db.delete(logs).where(
+      eq(logs.createdAt, cutoffDate)
+    );
   }
 }
 
